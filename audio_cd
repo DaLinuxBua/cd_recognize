@@ -1,29 +1,30 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import os
 from fcntl import ioctl
 
 cd_drive = '/dev/sr0'
 
-f = os.open(cd_drive, os.O_RDONLY | os.O_NONBLOCK)
-status_drive = ioctl(f, 0x5326)
+def check_cd(name=""):
+        f = os.open(cd_drive, os.O_RDONLY | os.O_NONBLOCK)
+        if name == "type":
+               return ioctl(f, 0x5327)
+        else:
+               return ioctl(f, 0x5326)
+        os.close(f)
 
+status_drive = check_cd()
 if status_drive == 1:
-        print("No CD in tray.")
+        print("empty tray")
 elif status_drive == 2:
-        print("CD tray opent.")
+        print("open tray")
 elif status_drive == 3:
-        print("CD tray working.")
+        print("drive busy")
 elif status_drive == 4:
-        cd_type = ioctl(f, 0x5327)
+        cd_type = check_cd("type")
         if cd_type == 100:
                 print("Audio CD")
         elif cd_type > 100 and cd_type < 106:
                 print("Data CD")
         else:
-                print("No CD")
+                print("no CD")
 else:
-        print("Unknown State.")
-       
-os.close(f)
+        print("unknown error")
