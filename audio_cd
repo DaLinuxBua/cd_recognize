@@ -6,10 +6,11 @@ cd_drive = '/dev/sr0'
 def check_cd(name=""):
         f = os.open(cd_drive, os.O_RDONLY | os.O_NONBLOCK)
         if name == "type":
-               return ioctl(f, 0x5327)
+                i = ioctl(f, 0x5327)
         else:
-               return ioctl(f, 0x5326)
+                i = ioctl(f, 0x5326)
         os.close(f)
+        return i
 
 status_drive = check_cd()
 if status_drive == 1:
